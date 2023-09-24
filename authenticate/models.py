@@ -31,14 +31,14 @@ class SignupTemp(models.Model):
        (2, 'ADMIN'),
        (3, 'SUB-ADMIN'),
     )
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    password = models.CharField(max_length=200)
-    email = models.EmailField()
-    access_role = models.IntegerField(default=3, choices = ROLES)
-    address = models.CharField(max_length=200)
-    phone_no = models.IntegerField()
-    otp = models.IntegerField(unique=True)
+    first_name = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
+    password = models.CharField(max_length=200, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    access_role = models.IntegerField(choices = ROLES,blank=True, null=True)
+    address = models.CharField(max_length=200, blank=True, null=True)
+    phone_no = models.IntegerField(blank=True, null=True)
+    otp = models.IntegerField(unique=True, blank=True, null=True)
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
