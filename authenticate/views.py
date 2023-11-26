@@ -37,11 +37,10 @@ class UserViewSet(GenericViewSet):
     @action(detail=False, methods=['POST'])
     def verify_otp(self, request):
         action = request.query_params.get('action')
-        print("action >>>",action)
         user = SignupTemp.objects.filter(email = request.data.get('email'), otp = request.data.get('otp')).first()
         temp_user_serializer= TempUserSerializer(user)
         if user:
-            if action == 'forget_password':
+            if action == 'forgot_password':
                 return Response({'success_message': "OTP Verified successfully"}, status=status.HTTP_200_OK)
             user_serializer = UserSerializer(data = temp_user_serializer.data)
             if user_serializer.is_valid(raise_exception=True,):
@@ -69,15 +68,18 @@ class UserViewSet(GenericViewSet):
     @action(detail=False, methods=['POST'])
     def logout(self, request):
         try:
-            token = RefreshToken(request.data.get("refresh"))
-            token.blacklist()
+            if request.data.get("refresh"):
+                token = RefreshToken(request.data.get("refresh"))
+                token.blacklist()
+            else:
+                return Response({"error_message": "Token not received"}, status=status.HTTP_400_BAD_REQUEST)
         except TokenError:
-            return Response({"error": "Invalid token."})
-        return Response({"success_message": "Successfully logged out."})
+            return Response({"error_message": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"success_message": "Successfully logged out."}, status=status.HTTP_200_OK)
     
     # ToDo : Forget Password API
     @action(detail=False, methods=['POST'])
-    def forget_password(self, request):
+    def forgot_password(self, request):
         user = User.objects.filter(email = request.data.get('email'))
         if user:
             serializer = TempUserSerializer(data=request.data, context = {'request' : request})
