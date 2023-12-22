@@ -13,7 +13,7 @@ class Ticket(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_ticket')
     serve = models.IntegerField()
     status = models.IntegerField(default=1, choices=STATUS)
-    otp = models.IntegerField()
+    otp = models.IntegerField(null = True, blank = True)
     description = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now=True)
     dispatch_at = models.DateTimeField(auto_now=True)

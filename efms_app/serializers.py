@@ -1,5 +1,18 @@
 from rest_framework import serializers
-from .models import Feed, Comment, Like, User
+from .models import Feed, Comment, Like, User, Ticket
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = '__all__'
+        extra_kwargs = {
+            'user_id' : {'read_only' : True},
+        }
+    
+    def create(self, validated_data):
+        validated_data['user_id'] = self.context['request'].user
+        return super().create(validated_data)
+
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
